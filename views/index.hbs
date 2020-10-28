@@ -1,0 +1,255 @@
+<div id="vueMain" style="max-width: 100%;">
+    <div id="main" style="max-width: 100%;">
+        <div class="row" style="max-width: 100%;">
+            <div class="col-8 col-sm-6 px-10 py-10">
+                <object id="short-url-svg" type="image/svg+xml" data="/short_url.svg">
+                    <img id="" src="/short_url.svg" alt="Short url illustration" />
+                </object>
+            </div>
+            <div
+                class="mainContent container col-12 col-sm-6 d-flex flex-column align-items-start justify-content-center px-20 ">
+                <h2 class="font-weight-bolder">Welcome to <span class="brand">Shorter.</span></>
+                    <br>
+                    <div class="font-size-20 font-weight-bold">
+                        Shorter is an all in one solution to long URL issues. This service was built using Node.js,
+                        MongoDB
+                        and little bit of Vue.js.
+                        Get your veryown short url by filling the following form. For more please visit <a
+                            href="https://www.codekulkarni.com">codekulkarni.com</a>.
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="container px-15 mt-20">
+        <div id="bodyMain">
+            <div class="d-flex align-items-start justify-content-center w-full">
+                <div class="row mw-full">
+                    <div v-if="createdUrl.length > 0"
+                        class="col-12 d-flex mw-full align-items-center justify-content-center font-size-22 py-20 my-20">
+                        <span class="text-success">Hooray!</span> <br>
+                        Your URL can be found at: {{ createdUrl }}
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <form @submit.prevent="submitForm" class="px-15">
+                            <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100% -->
+                            <!-- Input -->
+                            <h3>
+                                Create a short URL
+                            </h3>
+                            <div class="form-group" :class="validateEmail === false ?'is-invalid': ''">
+                                <label for="email" class="required">Your email: </label>
+                                <div v-if="validateEmail === false" class="invalid-feedback">
+                                    <ul>
+                                        <li>Enter a valid email</li>
+                                    </ul>
+                                </div>
+                                <input type="text" v-model="email" class="form-control" id="email"
+                                    placeholder="Valid email" required="required">
+                            </div>
+
+                            <div class="form-group" :class="validateOrigin === false ?'is-invalid': ''">
+                                <div v-if="validateOrigin === false" class="invalid-feedback">
+                                    <ul>
+                                        <li>Enter a valid URL (starting with http/https)</li>
+                                    </ul>
+                                </div>
+                                <label for="origin" class="required">URL to be shortened: </label>
+                                <input type="text" v-model="origin" class="form-control" id="origin"
+                                    placeholder="Enter complete URL" required="required">
+                            </div>
+
+                            <div v-if="isCustom" class="form-group"
+                                :class="validateCustomKeyword === false ?'is-invalid': ''">
+                                <div v-if="validateCustomKeyword === false" class="invalid-feedback">
+                                    <ul>
+                                        <li>Enter a valid keyword (containing only alphabets numbers and hiphen)</li>
+                                    </ul>
+                                </div>
+                                <label for="customKeyword" class="required">Enter a keyword: </label>
+                                <input type="text" v-model="customKeyword" class="form-control" id="customKeyword"
+                                    placeholder="Enter a keyword" required="required">
+                            </div>
+
+                            <!-- Switch -->
+                            <div class="form-group">
+                                <div class="custom-switch">
+                                    <input v-model="isCustom" type="checkbox" id="remember-my-information">
+                                    <label for="remember-my-information">Remember my information</label>
+                                </div>
+                            </div>
+
+                            {{!-- <!-- Checkbox -->
+                    <div class="form-group">
+                        <div class="custom-checkbox">
+                            <input type="checkbox" id="agree-to-terms">
+                            <label for="agree-to-terms">I agree to all the <a href="#" class="hyperlink">terms and
+                                    conditions</a></label>
+                        </div>
+                    </div> --}}
+
+                            <!-- Submit button -->
+                            <input class="btn btn-primary" type="submit" value="Create">
+                        </form>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <form @submit.prevent="findUrl" class="px-15">
+                            <div class="d-flex align-items-center justify-content-center flex-row d-md-none">
+                                <span>or</span>
+                            </div>
+                            <!-- w-400 = width: 40rem (400px), mw-full = max-width: 100% -->
+                            <!-- Input -->
+                            <h3>
+                                Find existing URL
+                            </h3>
+                            <div class="form-group" :class="validateSearch === false ?'is-invalid': ''">
+                                <label for="email" class="required">Your email: </label>
+                                <div v-if="validateSearch === false" class="invalid-feedback">
+                                    <ul>
+                                        <li>Enter a valid email</li>
+                                    </ul>
+                                </div>
+                                <input type="text" v-model="search" class="form-control" id="email"
+                                    placeholder="Valid email" required="required">
+                            </div>
+                            <!-- Submit button -->
+                            <input class="btn btn-primary" type="submit" value="Find">
+                        </form>
+                        <div v-if="searchResult.length > 0" class="row mw-full my-20 px-15">
+                            <div class="col-12 urlList py-15 px-15 my-5 font-weight-bolder">
+                                https://codekulkarni.com
+                            </div>
+                            <div class="col-12 urlList py-15 px-10 my-5">
+                                https://codekulkarni.com
+                            </div>
+                            <div class="col-12 urlList py-15 px-10 my-5">
+                                https://codekulkarni.com
+                            </div>
+                            <div class="col-12 urlList py-15 px-10 my-5">
+                                https://codekulkarni.com
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <footer class>
+        <div class="row" style="max-width: 100%;">
+            <div class="col-12 d-flex align-items-center justify-content-center mt-20 py-20 footer bg-light text-dark">
+                Made with ♥️ Shreesh Kulkarni
+            </div>
+        </div>
+    </footer>
+</div>
+<script>
+    var app = new Vue({
+        el: '#vueMain',
+        delimiters: ['[[', ']]'],
+        data: {
+            origin: "",
+            isCustom: "",
+            customKeyword: "",
+            email: "",
+            search: "",
+            createdUrl: "",
+            searchResult: []
+        },
+        methods: {
+            submitForm() {
+                this.createdUrl = ""
+                if (!this.validateEmail || !this.validateOrigin || !this.validateCustomKeyword) {
+                    halfmoon.initStickyAlert({
+                        title: "Form Validation failed!",
+                        alertType: "alert-danger",
+                        fillType: "filled"
+                    })
+                    return
+                }
+                axios.post('/api', {
+                    origin: this.origin,
+                    short: this.isCustom ? this.customKeyword : null,
+                    email: this.email
+                }).then(({ data }) => {
+                    this.createSuccess()
+                    this.email = ''
+                    this.origin = ''
+                    this.customKeyword = ''
+                    this.createdUrl = `https://${window.location.host}/${data.data.short}`
+                }).catch(err => {
+                    console.error(err)
+                    halfmoon.initStickyAlert({
+                        content: err.response ? err.response.data.message : '',
+                        title: "Failed to create URL!",
+                        alertType: "alert-danger",
+                        fillType: "filled"
+                    })
+                })
+            },
+            findUrl() {
+                this.searchResult = []
+                this.axios.get('/api/search', {
+                    params: {
+                        q: this.search
+                    }
+                }).then(({ data }) => {
+                    this.search = ''
+                    this.searchResult = data.data
+                }).catch(err => {
+                    console.error(err)
+                    halfmoon.initStickyAlert({
+                        content: err.response ? err.response.data.message : '',
+                        title: "Failed to find!",
+                        alertType: "alert-danger",
+                        fillType: "filled"
+                    });
+                })
+            },
+            toastSuccessAlert() {
+                halfmoon.initStickyAlert({
+                    title: "Created URL Successfully",
+                    alertType: "alert-success",
+                    fillType: "filled-lm"
+                })
+            }
+        },
+        computed: {
+            validateEmail() {
+                const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                return re.test(String(this.email).toLowerCase())
+            },
+            validateSearch() {
+                const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                return re.test(String(this.search).toLowerCase())
+            },
+            validateOrigin() {
+                return this.origin.length > 0 && /^(ftp|http|https):\/\/[^ "]+$/.test(this.origin);
+            },
+            validateCustomKeyword() {
+                const re = /^[0-9a-zA-Z-]+$/
+                return re.test(String(this.customKeyword).toLowerCase())
+            }
+
+        }
+    })
+</script>
+
+<style>
+    #short-url-svg {
+        width: 100%;
+    }
+
+    .urlList {
+        border-top: 1px solid #ecf0f1;
+        border-bottom: 1px solid #ecf0f1;
+        border-left: 1px solid #ecf0f1;
+        border-right: 1px solid #ecf0f1;
+        border-radius: 5px;
+        background-color: #35383c;
+    }
+
+    .urlList:hover {
+        background-color: #25282c;
+    }
+</style>

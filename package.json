@@ -1,0 +1,27 @@
+{
+  "name": "short",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Shreesh Kulkarni <sgkul2000@gail.com>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.2.0",
+    "handlebars": "^4.7.6",
+    "mongoose": "^5.10.11",
+    "morgan": "^1.10.0",
+    "nanoid": "^3.1.16"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1"
+  }
+}
