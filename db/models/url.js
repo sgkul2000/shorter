@@ -4,8 +4,7 @@ const URLSchema = new mongoose.Schema(
     {
         origin:{
             type: String,
-            required: true,
-            unique: true
+            required: true
         },
         short:{
             type: String,

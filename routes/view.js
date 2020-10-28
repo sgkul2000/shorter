@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
 router.get('/:short', (req, res, next) => {
     URL.findOne({short: req.params.short}).then((url) => {
         if(!url){
-            return res.render('index.hbs')
+            return res.render('404.hbs')
         }
         res.redirect(url.origin)
     }).catch(next)

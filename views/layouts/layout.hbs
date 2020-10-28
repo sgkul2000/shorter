@@ -4,7 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL Shortner</title>
+    <title>Shorter</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="/site.webmanifest">
 
     {{!-- vuejs imports --}}
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
@@ -31,12 +37,21 @@
     <!-- Halfmoon JS -->
     <script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.js"></script>
 
+    {{!-- toastify imports --}}
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     {{!-- axios imports --}}
-    <script src="https://cdn.jsdelivr.net/npm/axios@0.21.0/dist/axios.min.js" integrity="sha256-OPn1YfcEh9W2pwF1iSS+yDk099tYj+plSrCS6Esa9NA=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.21.0/dist/axios.min.js"
+        integrity="sha256-OPn1YfcEh9W2pwF1iSS+yDk099tYj+plSrCS6Esa9NA=" crossorigin="anonymous"></script>
 
     {{!-- Google font - Anonymous Pro --}}
     <link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:ital@0;1&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #ff8008;
+        }
+
         * {
             font-family: 'Anonymous Pro', monospace !important;
         }

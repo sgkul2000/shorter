@@ -25,9 +25,9 @@
             <div class="d-flex align-items-start justify-content-center w-full">
                 <div class="row mw-full">
                     <div v-if="createdUrl.length > 0"
-                        class="col-12 d-flex mw-full align-items-center justify-content-center font-size-22 py-20 my-20">
-                        <span class="text-success">Hooray!</span> <br>
-                        Your URL can be found at: {{ createdUrl }}
+                        class="col-12 d-flex mw-full align-items-center justify-content-center flex-column font-size-22 py-20 my-20">
+                        <span class="text-success">Hooray!</span>
+                        <span>Your URL can be found at: <a :href="createdUrl" target="_blank" class="font-weight-bold">[[ createdUrl ]]</a></span>
                     </div>
                     <div class="col-12 col-md-6">
                         <form @submit.prevent="submitForm" class="px-15">
@@ -73,8 +73,8 @@
                             <!-- Switch -->
                             <div class="form-group">
                                 <div class="custom-switch">
-                                    <input v-model="isCustom" type="checkbox" id="remember-my-information">
-                                    <label for="remember-my-information">Remember my information</label>
+                                    <input v-model="isCustom" type="checkbox" id="isCustom">
+                                    <label for="isCustom">Use custom keyword</label>
                                 </div>
                             </div>
 
@@ -114,18 +114,15 @@
                             <!-- Submit button -->
                             <input class="btn btn-primary" type="submit" value="Find">
                         </form>
-                        <div v-if="searchResult.length > 0" class="row mw-full my-20 px-15">
-                            <div class="col-12 urlList py-15 px-15 my-5 font-weight-bolder">
-                                https://codekulkarni.com
+                        <div v-if="searchResult !== null && searchResult.length > 0" class="row mw-full my-20 px-15">
+                            <div v-for="url in searchResult" class="col-12 urlList py-15 px-15 my-5 font-weight-bolder"
+                                @click="redirect(url)">
+                                [[ url.origin ]]
                             </div>
-                            <div class="col-12 urlList py-15 px-10 my-5">
-                                https://codekulkarni.com
-                            </div>
-                            <div class="col-12 urlList py-15 px-10 my-5">
-                                https://codekulkarni.com
-                            </div>
-                            <div class="col-12 urlList py-15 px-10 my-5">
-                                https://codekulkarni.com
+                        </div>
+                        <div v-if="searchResult !== null && searchResult.length <1" class="row mw-full my-20 px-15">
+                            <div class="col-12 py-15 px-15 my-5 font-weight-bolder text-danger" @click="redirect(url)">
+                                no results
                             </div>
                         </div>
                     </div>
@@ -154,17 +151,13 @@
             email: "",
             search: "",
             createdUrl: "",
-            searchResult: []
+            searchResult: null
         },
         methods: {
             submitForm() {
                 this.createdUrl = ""
-                if (!this.validateEmail || !this.validateOrigin || !this.validateCustomKeyword) {
-                    halfmoon.initStickyAlert({
-                        title: "Form Validation failed!",
-                        alertType: "alert-danger",
-                        fillType: "filled"
-                    })
+                if (!this.validateEmail || !this.validateOrigin || (this.isCustom && !this.validateCustomKeyword)) {
+                    this.toastError('Form Validation Failed!')
                     return
                 }
                 axios.post('/api', {
@@ -172,46 +165,61 @@
                     short: this.isCustom ? this.customKeyword : null,
                     email: this.email
                 }).then(({ data }) => {
-                    this.createSuccess()
                     this.email = ''
                     this.origin = ''
                     this.customKeyword = ''
                     this.createdUrl = `https://${window.location.host}/${data.data.short}`
+                    this.toastSuccess('Created URL successfully!')
                 }).catch(err => {
                     console.error(err)
-                    halfmoon.initStickyAlert({
-                        content: err.response ? err.response.data.message : '',
-                        title: "Failed to create URL!",
-                        alertType: "alert-danger",
-                        fillType: "filled"
-                    })
+                    this.toastError('URL creating failed!')
                 })
             },
             findUrl() {
                 this.searchResult = []
-                this.axios.get('/api/search', {
+                axios.get('/api/search', {
                     params: {
                         q: this.search
                     }
                 }).then(({ data }) => {
                     this.search = ''
                     this.searchResult = data.data
+                    if (this.searchResult.length < 1) {
+                        this.toastError('URL not found. please enter the correct email.')
+                    }
                 }).catch(err => {
                     console.error(err)
-                    halfmoon.initStickyAlert({
-                        content: err.response ? err.response.data.message : '',
-                        title: "Failed to find!",
-                        alertType: "alert-danger",
-                        fillType: "filled"
-                    });
+                    this.toastError('Failed to find URL.')
                 })
             },
-            toastSuccessAlert() {
-                halfmoon.initStickyAlert({
-                    title: "Created URL Successfully",
-                    alertType: "alert-success",
-                    fillType: "filled-lm"
-                })
+            toastSuccess(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "top", // `top` or `bottom`
+                    position: 'center', // `left`, `center` or `right`
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    onClick: function () { } // Callback after click
+                }).showToast()
+            },
+            toastError(message) {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "top", // `top` or `bottom`
+                    position: 'center', // `left`, `center` or `right`
+                    backgroundColor: "linear-gradient(to right, rgb(130, 30, 30), rgb(190, 0, 60))",
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    onClick: function () { } // Callback after click
+                }).showToast()
+            },
+            redirect(url) {
+                window.open(url.origin, '_blank')
             }
         },
         computed: {
@@ -241,6 +249,7 @@
     }
 
     .urlList {
+        cursor: pointer;
         border-top: 1px solid #ecf0f1;
         border-bottom: 1px solid #ecf0f1;
         border-left: 1px solid #ecf0f1;
