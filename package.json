@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
   },
   "keywords": [],
-  "author": "Shreesh Kulkarni <sgkul2000@gail.com>",
+  "author": "Shreesh Kulkarni <sgkul2000@gail.com> (https://www.codekulkarni.com)",
   "license": "UNLICENSED",
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -17,12 +17,14 @@
     "express": "^4.17.1",
     "express-handlebars": "^5.2.0",
     "handlebars": "^4.7.6",
+    "helmet": "^4.2.0",
     "mongoose": "^5.10.11",
     "morgan": "^1.10.0",
     "nanoid": "^3.1.16",
     "toastify-js": "^1.9.3"
   },
   "devDependencies": {
-    "eslint": "^7.12.1"
+    "eslint": "^7.12.1",
+    "nodemon": "^2.0.6"
   }
 }

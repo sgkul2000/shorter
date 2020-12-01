@@ -2,6 +2,7 @@ const express = require('express')
 const BodyParser = require('body-parser')
 const cors = require('cors')
 const hbs = require('express-handlebars')
+const helmet  = require('helmet')
 // const Handlebars = require('handlebars')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
@@ -19,25 +20,24 @@ mongoose.connect(process.env.MONGO_URI, {
     useUnifiedTopology: true
 })
 
-// logger for incoming requests
-const logger = morgan('dev', {
-    // skip: function (req, res) { return res.statusCode < 400 }
-})
-
 const app = express()
 
 // middleware
-app.use(logger)
+app.use(morgan('dev'))
+
+// using helmet
+app.use(helmet())
 
 // declaring handlebars
 app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'layout', layoutDir: __dirname + '/views/layouts/', partialsDir: __dirname+'/views/partials/'}))
+app.set('views', __dirname + '/views')
 app.set('view engine', 'hbs')
 
 app.use(cors())
 app.use(BodyParser.json())
 
 // setting static folder to "public"
-app.use(express.static('public'))
+app.use(express.static( __dirname + '/public'))
 
 // including routes
 app.use('/api/', mainRouter)
@@ -48,10 +48,4 @@ app.use('/', viewRouter)
 // Error handler middleware
 app.use(errorHandler)
 
-// setting port
-let port = process.env.PORT || 8000
-
-// establishing server
-app.listen(port, () => {
-    console.log(`Listening at port ${port}`)
-})
+module.exports = app
